@@ -8,7 +8,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
-    fullscreen: true,
+    fullscreen: false,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),

@@ -74,7 +74,7 @@ const handleStart = async () => {
       </div>
     </div>
   </div>
-</template>
+</template>06dadc99-a11f-40a0-879d-66c241ede579
 
 <style scoped>
 /* Reset Fullscreen Kiosk Layout */
