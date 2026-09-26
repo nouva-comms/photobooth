@@ -1,0 +1,69 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Frame {
+  id          String    @id @default(uuid())
+  name        String
+  imagePath   String
+  previewPath String?
+  slotCount   Int       @default(4)
+  aspectRatio String    @default("4x6")
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  sessions    Session[]
+
+  @@map("frames")
+}
+
+model Session {
+  id             String    @id @default(uuid())
+  sessionCode    String    @unique
+  frameId        String?
+  frame          Frame?    @relation(fields: [frameId], references: [id])
+  paymentStatus  String    @default("UNPAID")
+  paymentAmount  Int       @default(35000)
+  paymentMethod  String?
+  finalImagePath String?
+  userEmail      String?
+  emailSent      Boolean   @default(false)
+  printStatus    String    @default("PENDING")
+  printCount     Int       @default(1)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  photos         Photo[]
+
+  @@map("sessions")
+}
+
+model Photo {
+  id            String   @id @default(uuid())
+  sessionId     String
+  session       Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  filePath      String
+  photoOrder    Int
+  filterApplied String   @default("NORMAL")
+  createdAt     DateTime @default(now())
+
+  @@map("photos")
+}
+
+model Setting {
+  id              String   @id @default("default")
+  storageDir      String
+  countdownSec    Int      @default(3)
+  printerName     String?
+  smtpHost        String?
+  smtpPort        Int?
+  smtpUser        String?
+  smtpPass        String?
+  qrisMerchantId  String?
+  updatedAt       DateTime @updatedAt
+
+  @@map("settings")
+}
