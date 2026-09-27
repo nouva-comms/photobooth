@@ -7,6 +7,102 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#d0e4ff",
+              "on-primary-fixed": "#001551",
+              "on-background": "#131b2e",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#f2f3ff",
+              "on-primary-fixed-variant": "#0039b5",
+              "on-tertiary-fixed-variant": "#03497a",
+              "on-secondary-container": "#fefcff",
+              "primary-container": "#1d4ed8",
+              "secondary-fixed": "#d8e2ff",
+              "error-container": "#ffdad6",
+              "on-surface": "#131b2e",
+              "surface-tint": "#2151da",
+              "surface-container-highest": "#dae2fd",
+              "tertiary-container": "#285f91",
+              "surface-dim": "#d2d9f4",
+              "on-tertiary-container": "#b8d8ff",
+              "on-secondary-fixed": "#001a42",
+              "on-error-container": "#93000a",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#2170e4",
+              "tertiary-fixed-dim": "#9ccaff",
+              "background": "#faf8ff",
+              "secondary": "#0058be",
+              "surface-bright": "#faf8ff",
+              "inverse-primary": "#b7c4ff",
+              "outline": "#747686",
+              "tertiary": "#004777",
+              "inverse-on-surface": "#eef0ff",
+              "primary-fixed": "#dce1ff",
+              "primary-fixed-dim": "#b7c4ff",
+              "on-error": "#ffffff",
+              "surface-variant": "#dae2fd",
+              "primary": "#0037b0",
+              "on-secondary": "#ffffff",
+              "outline-variant": "#c4c5d7",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-secondary-fixed-variant": "#004395",
+              "on-primary-container": "#cad3ff",
+              "surface-container": "#eaedff",
+              "surface-container-high": "#e2e7ff",
+              "on-tertiary-fixed": "#001d35",
+              "surface": "#faf8ff",
+              "inverse-surface": "#283044",
+              "on-surface-variant": "#434655",
+              "error": "#ba1a1a"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "space-xl": "2.5rem",
+              "space-lg": "1.5rem",
+              "space-xs": "0.25rem",
+              "space-md": "1rem",
+              "space-sm": "0.5rem",
+              "gutter": "1.5rem",
+              "margin": "2.5rem"
+            },
+            fontFamily: {
+              "body-md": ["Manrope"],
+              "headline-lg": ["Space Grotesk"],
+              "headline-md": ["Space Grotesk"],
+              "display-sm": ["Space Grotesk"],
+              "display-lg": ["Space Grotesk"],
+              "label-md": ["Manrope"],
+              "body-lg": ["Manrope"],
+              "label-lg": ["Manrope"]
+            },
+            fontSize: {
+              "body-md": ["1rem", { "lineHeight": "1.5rem", "letterSpacing": "0em", "fontWeight": "400" }],
+              "headline-lg": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+              "headline-md": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+              "display-sm": ["2.75rem", { "lineHeight": "3.25rem", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+              "display-lg": ["4rem", { "lineHeight": "4.5rem", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+              "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.04em", "fontWeight": "600" }],
+              "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "letterSpacing": "0em", "fontWeight": "400" }],
+              "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "600" }]
+            }
+          }
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>

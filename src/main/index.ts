@@ -17,6 +17,22 @@ function createWindow() {
     },
   })
 
+  // Shortcut Fullscreen & Windowed Mode
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    const isF11 = input.key === 'F11'
+    const isAltEnter = input.key === 'Enter' && input.alt
+    const isAltF4 = input.key === 'F4' && input.alt
+
+    if ((isF11 || isAltEnter) && input.type === 'keyDown') {
+      if (mainWindow) mainWindow.setFullScreen(!mainWindow.isFullScreen())
+      event.preventDefault()
+    }
+
+    if (isAltF4 && input.type === 'keyDown') {
+      app.quit()  // Force keluar total dari aplikasi
+    }
+  })
+
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {

@@ -7,375 +7,344 @@ const router = useRouter()
 const sessionStore = useSessionStore()
 
 const isPrinting = ref<boolean>(false)
-const printCopies = ref<number>(1)
-const qrCodeUrl = ref<string>('')
+const printCopies = ref<number>(2)
+const email = ref<string>('')
+const emailSent = ref<boolean>(false)
+const showSuccessModal = ref<boolean>(false)
+const sentToEmail = ref<string>('')
 
-// Ambil data hasil komposisi akhir dari Pinia Store
+// Print progress (auto simulate)
+const printProgress = ref<number>(0)
+const printStatusLabel = ref<string>('Printing 2 Copies...')
+let printInterval: ReturnType<typeof setInterval> | null = null
+
 const finalImage = sessionStore.finalComposedImagePath
 const sessionCode = sessionStore.sessionCode
 
-// Generate URL QR Code untuk download digital via HP/Web
-const generateQrCode = async () => {
-  if (!sessionCode) return
-  try {
-    const res = await window.api.generateDownloadQrCode(sessionCode)
-    if (res.success && res.qrDataUrl) {
-      qrCodeUrl.value = res.qrDataUrl
+const startPrintSimulation = () => {
+  printProgress.value = 0
+  printStatusLabel.value = `Printing ${printCopies.value} Copies...`
+  if (printInterval) clearInterval(printInterval)
+  printInterval = setInterval(() => {
+    if (printProgress.value < 100) {
+      printProgress.value += 10
+    } else {
+      printStatusLabel.value = 'Prints Completed!'
+      if (printInterval) clearInterval(printInterval)
     }
-  } catch (error) {
-    console.error('Gagal membuat QR Code:', error)
+  }, 1500)
+}
+
+const increaseCopies = () => {
+  if (printCopies.value < 4) {
+    printCopies.value += 1
+    startPrintSimulation()
   }
 }
 
-// Tambah / Kurang Jumlah Cetak
-const increaseCopies = () => {
-  if (printCopies.value < 4) printCopies.value += 1
-}
-
 const decreaseCopies = () => {
-  if (printCopies.value > 1) printCopies.value -= 1
+  if (printCopies.value > 1) {
+    printCopies.value -= 1
+    startPrintSimulation()
+  }
 }
 
-// Perintah Cetak Foto via Backend IPC (Printer Spooler)
 const handlePrintPhoto = async () => {
   if (isPrinting.value || !finalImage) return
   isPrinting.value = true
-
   try {
     const res = await window.api.printPhoto(
-      sessionStore.currentSessionId,
+      sessionStore.currentSessionId ? sessionStore.currentSessionId : '',
       printCopies.value
     )
-
     if (res.success) {
-      // Pindah ke Halaman Terima Kasih & Penutup (Step 7)
-      router.push('/print-email')
+      // Print done, stay on page for email
     } else {
-      alert('Gagal mencetak foto: ' + res.message)
+      alert('Gagal mencetak: ' + res.message)
     }
   } catch (error) {
-    console.error('Error saat mengirim perintah cetak:', error)
-    alert('Terjadi kesalahan pada mesin printer.')
+    console.error('Print error:', error)
+    alert('Terjadi kesalahan pada printer.')
   } finally {
     isPrinting.value = false
   }
 }
 
+// const sendEmail = async () => {
+//   if (!email.value || !finalImage) return
+//   try {
+//     const res = await window.api.sendSoftcopyEmail(sessionStore.currentSessionId ? sessionStore.currentSessionId : '', email.value)
+//     if (res.success) {
+//       emailSent.value = true
+//       sentToEmail.value = email.value
+//       showSuccessModal.value = true
+//     } else {
+//       alert('Gagal kirim email: ' + res.message)
+//     }
+//   } catch (error) {
+//     console.error('Email error:', error)
+//     alert('Gagal mengirim email.')
+//   }
+// }
+
+const sendEmail = async () => {
+  if (!email.value || !finalImage) return
+  
+  try {
+    // SIMULASI: Delay 1.5 detik seolah-olah sedang mengirim ke server
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // SIMULASI SUCCESS: Langsung set nilai sukses
+    emailSent.value = true
+    sentToEmail.value = email.value
+    showSuccessModal.value = true
+  } catch (error) {
+    console.error('Email error:', error)
+    alert('Gagal mengirim email.')
+  }
+}
+
+const handleSendComplete = () => {
+  if (!email.value) return
+  sendEmail()
+}
+
+const restartSession = () => {
+  sessionStore.resetSession()
+  router.push('/')
+}
+
+const closeModal = () => {
+  showSuccessModal.value = false
+  // Auto restart after success
+  // setTimeout(restartSession, 500)
+  router.push('/thankyou')
+}
+
 onMounted(() => {
-  generateQrCode()
+  startPrintSimulation()
+})
+
+onMounted(() => {
+  if (printInterval) clearInterval(printInterval)
 })
 </script>
 
 <template>
-  <div class="result-container">
-    <!-- Top Step Header -->
-    <div class="step-header">
-      <span class="step-badge">LANGKAH 6 DARI 7</span>
-      <h2 class="step-title">Pratinjau & Cetak Foto</h2>
-      <p class="step-subtitle">Pindai QR Code untuk mengunduh softcopy dan cetak cetakan fisik Anda</p>
+  <div class="fixed inset-0 bg-background font-body-md text-on-surface antialiased select-none flex flex-col p-margin">
+
+    <div class="flex items-center justify-between z-50 pointer-events-none mb-space-md">
+      <div class="flex items-center gap-space-sm pointer-events-auto">
+        <div class="flex items-center gap-space-xs">
+          <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+        </div>
+        <div class="w-1.5 h-1.5 rounded-full bg-primary/40 ml-space-xs"></div>
+        <span class="font-label-md text-label-md text-on-surface-variant/50 tracking-widest uppercase">Lumina Studio</span>
+      </div>
+      <div class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md shadow-sm pointer-events-auto">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="font-label-md text-label-md text-on-surface-variant tracking-wider uppercase">Live Kiosk</span>
+      </div>
     </div>
 
-    <!-- Main Workspace Area -->
-    <div class="result-workspace">
-      <!-- Final Image Display -->
-      <div class="image-preview-card">
-        <img
-          v-if="finalImage"
-          :src="finalImage"
-          alt="Hasil Foto Photobooth"
-          class="final-composed-img"
-        />
-        <div v-else class="placeholder-box">
-          <span>Gambar tidak ditemukan</span>
+    <main class="flex-1 flex flex-col min-h-0 overflow-hidden relative z-10">
+
+      <div class="flex flex-col items-start gap-space-xs mb-space-md">
+        <div class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md tracking-wider uppercase">
+          <span class="material-symbols-outlined text-[14px]">done_all</span>
+          <span>Stage 07 • Fulfillment</span>
         </div>
+        <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Print &amp; Email Your Photos</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Collect your glossy prints below and enter your email for instant high-res digital copies.</p>
       </div>
 
-      <!-- Right Panel: QR Download & Print Settings -->
-      <div class="options-panel">
-        <!-- Digital Download QR Code -->
-        <div class="qr-section">
-          <h3 class="panel-section-title">Unduh Softcopy</h3>
-          <div class="qr-card">
-            <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code Download" class="qr-img" />
-            <div v-else class="qr-skeleton">Memuat QR...</div>
-            <p class="qr-instruction">Scan dengan kamera HP untuk menyimpan foto & GIF</p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start flex-1 min-h-0">
+
+        <!-- LEFT: Physical Printing -->
+        <div class="lg:col-span-6 flex flex-col gap-space-lg min-h-0">
+          <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md flex-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-space-sm">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-[26px]">photo_library</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-label-lg text-label-lg text-on-surface font-semibold">Physical Printing</span>
+                  <span class="font-label-md text-label-md text-on-surface-variant">DNP Dye-Sublimation Studio Unit</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary font-label-md text-label-md">
+                <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+                <span>Active</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-space-md mt-space-xs">
+              <div class="w-24 h-32 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container relative shadow-sm">
+                <img v-if="finalImage" :src="finalImage" alt="Print preview" class="w-full h-full object-cover" />
+                <div v-else class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
+                  <span class="material-symbols-outlined text-3xl">image</span>
+                </div>
+                <div class="absolute bottom-1 right-1 px-1 rounded bg-inverse-surface/80 text-inverse-on-surface font-label-md text-[10px]">2x6"</div>
+              </div>
+              <div class="flex-1 flex flex-col justify-between h-full gap-space-sm">
+                <div class="flex flex-col">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-body-md text-body-md text-on-surface font-medium">{{ printStatusLabel }}</span>
+                    <span class="font-label-md text-label-md text-primary font-bold">{{ printProgress }}%</span>
+                  </div>
+                  <div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all duration-700 ease-out" :style="{ width: printProgress + '%' }"></div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[16px] text-primary">output</span>
+                  <span>Tray dispenser slot directly below monitor</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between gap-2">
+              <button type="button" @click="decreaseCopies" :disabled="printCopies <= 1" class="flex-1 px-4 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container disabled:opacity-50 transition-colors font-label-md text-label-md text-on-surface">- Copies</button>
+              <div class="flex items-center justify-center px-4 py-2 bg-surface-container-low rounded-lg">
+                <span class="font-headline-md text-headline-md text-on-surface font-bold">{{ printCopies }} Copies</span>
+              </div>
+              <button type="button" @click="increaseCopies" :disabled="printCopies >= 4" class="flex-1 px-4 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container disabled:opacity-50 transition-colors font-label-md text-label-md text-on-surface">+ Copies</button>
+            </div>
+
+            <button type="button" @click="handlePrintPhoto" :disabled="isPrinting" class="w-full h-12 px-space-lg rounded-xl bg-primary text-on-primary hover:bg-primary-container font-label-lg text-label-lg font-bold flex items-center justify-center gap-space-sm shadow-md transition-all active:scale-[0.98] disabled:opacity-50">
+              <span class="material-symbols-outlined text-[20px]">print</span>
+              <span v-if="!isPrinting">Print Now</span>
+              <span v-else class="flex items-center gap-2"><span class="animate-spin w-5 h-5 border-2 border-on-primary/30 border-t-on-primary rounded-full"></span>Printing...</span>
+            </button>
+          </div>
+
+          <div class="rounded-xl bg-surface-container-low p-space-md flex items-center justify-between">
+            <div class="flex items-center gap-space-sm">
+              <span class="material-symbols-outlined text-primary text-[22px]">lock_clock</span>
+              <span class="font-label-md text-label-md text-on-surface-variant">Photos deleted from station disk in 15 minutes</span>
+            </div>
+            <span class="font-label-md text-label-md text-primary font-semibold">Privacy Protected</span>
           </div>
         </div>
 
-        <!-- Print Counter Selector -->
-        <div class="print-counter-section">
-          <h3 class="panel-section-title">Jumlah Cetak (Print)</h3>
-          <div class="counter-control">
-            <button class="btn-counter" :disabled="printCopies <= 1" @click="decreaseCopies">
-              -
-            </button>
-            <span class="copies-count">{{ printCopies }} Lembar</span>
-            <button class="btn-counter" :disabled="printCopies >= 4" @click="increaseCopies">
-              +
-            </button>
+        <!-- RIGHT: Digital Copies via Email -->
+        <div class="lg:col-span-6 flex flex-col gap-space-lg min-h-0">
+          <div class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col gap-space-md flex-1">
+            <div class="flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-headline-md text-headline-md text-on-surface">Digital Copies via Email</span>
+                <span class="font-body-md text-body-md text-on-surface-variant">High-res stills, animated GIF, and video reel</span>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[20px]">mail</span>
+              </div>
+            </div>
+
+            <div class="relative w-full mt-space-xs">
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined absolute left-4 text-primary text-[24px] pointer-events-none">alternate_email</span>
+                <input v-model="email" type="email" placeholder="Enter email address" class="w-full pl-12 pr-12 py-3.5 rounded-lg bg-surface-container-low text-on-surface font-body-lg text-body-lg focus:outline-none focus:bg-surface-container-lowest shadow-inner transition-colors duration-200" id="kioskEmailInput" />
+                <button type="button" @click="email = ''" class="absolute right-3.5 w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors" aria-label="Clear email">
+                  <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-space-xs overflow-x-auto pb-1">
+              <span class="font-label-md text-label-md text-on-surface-variant mr-1 flex-shrink-0">Quick Add:</span>
+              <button type="button" @click="email = (email.split('@')[0] || 'photo') + '@gmail.com'" class="domain-pill px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary font-label-md text-label-md text-on-surface font-medium transition-colors">@gmail.com</button>
+              <button type="button" @click="email = (email.split('@')[0] || 'photo') + '@icloud.com'" class="domain-pill px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary font-label-md text-label-md text-on-surface font-medium transition-colors">@icloud.com</button>
+              <button type="button" @click="email = (email.split('@')[0] || 'photo') + '@outlook.com'" class="domain-pill px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary font-label-md text-label-md text-on-surface font-medium transition-colors">@outlook.com</button>
+              <button type="button" @click="email = (email.split('@')[0] || 'photo') + '@yahoo.com'" class="domain-pill px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-primary hover:text-on-primary font-label-md text-label-md text-on-surface font-medium transition-colors">@yahoo.com</button>
+            </div>
+
+            <!-- On-screen keyboard (compact) -->
+            <div class="w-full bg-surface-container-low p-3 rounded-xl flex flex-col gap-2 mt-space-xs select-none">
+              <div class="grid grid-cols-10 gap-1.5 w-full">
+                <button v-for="n in 10" :key="n" type="button" @click="email += (n % 10)" class="kb-key h-12 rounded-lg bg-surface-container-lowest text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm">{{ n % 10 }}</button>
+              </div>
+              <div class="grid grid-cols-10 gap-1.5 w-full">
+                <button v-for="k in ['q','w','e','r','t','y','u','i','o','p']" :key="k" type="button" @click="email += k" class="kb-key h-12 rounded-lg bg-surface-container-lowest text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm">{{ k }}</button>
+              </div>
+              <div class="grid grid-cols-9 gap-1.5 w-11/12 mx-auto">
+                <button v-for="k in ['a','s','d','f','g','h','j','k','l']" :key="k" type="button" @click="email += k" class="kb-key h-12 rounded-lg bg-surface-container-lowest text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm">{{ k }}</button>
+              </div>
+              <div class="grid grid-cols-10 gap-1.5 w-full">
+                <button type="button" @click="email = email.slice(0, -1)" class="kb-key h-12 rounded-lg bg-surface-container-highest text-error font-headline-md text-headline-md active:bg-error active:text-on-error flex items-center justify-center shadow-sm col-span-2"><span class="material-symbols-outlined text-[22px]">backspace</span></button>
+                <button v-for="k in ['z','x','c','v','b','n','m']" :key="k" type="button" @click="email += k" class="kb-key h-12 rounded-lg bg-surface-container-lowest text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm">{{ k }}</button>
+                <button type="button" @click="email += '@'" class="kb-key h-12 rounded-lg bg-surface-container text-primary font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm col-span-1">@</button>
+              </div>
+              <div class="grid grid-cols-12 gap-1.5 w-full">
+                <button type="button" @click="email += ' '" class="kb-key h-12 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm col-span-4">space</button>
+                <button type="button" @click="email += '.'" class="kb-key h-12 rounded-lg bg-surface-container text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm col-span-2">.</button>
+                <button type="button" @click="email += '-'" class="kb-key h-12 rounded-lg bg-surface-container text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm col-span-2">-</button>
+                <button type="button" @click="email += '_'" class="kb-key h-12 rounded-lg bg-surface-container text-on-surface font-headline-md text-headline-md active:bg-primary active:text-on-primary flex items-center justify-center shadow-sm col-span-2">_</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Bottom Action Bar -->
-    <div class="action-bar">
-      <div class="session-tag">
-        Sesi: <strong>#{{ sessionCode }}</strong>
+      <!-- Bottom Actions -->
+      <div class="w-full flex items-center justify-between pt-space-xs pb-space-lg mt-auto">
+        <button type="button" @click="restartSession" class="h-14 px-space-lg rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-lg text-label-lg flex items-center gap-space-xs transition-colors">
+          <span class="material-symbols-outlined text-[20px]">refresh</span>
+          <span>New Photo Session</span>
+        </button>
+        <div class="flex items-center gap-space-md">
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="font-label-lg text-label-lg text-on-surface font-semibold">Ready to finish?</span>
+            <span class="font-label-md text-label-md text-on-surface-variant">Sends digital bundle and logs out</span>
+          </div>
+          <button type="button" @click="handleSendComplete" :disabled="!email.valueOf() || emailSent.valueOf()" class="h-14 px-8 rounded-xl bg-primary text-on-primary hover:bg-primary-container font-label-lg text-label-lg font-bold flex items-center gap-space-sm shadow-md transition-all active:scale-[0.98] disabled:opacity-50">
+            <span class="material-symbols-outlined text-[20px]">send</span>
+            <span>Send &amp; Complete →</span>
+          </button>
+        </div>
       </div>
+    </main>
 
-      <button
-        class="btn-primary-print"
-        :disabled="isPrinting || !finalImage"
-        @click="handlePrintPhoto"
-      >
-        <span v-if="!isPrinting">🖨️ Cetak Foto Sekarang</span>
-        <span v-else class="printing-state">
-          <span class="spinner"></span> Mengirim ke Printer...
-        </span>
-      </button>
+    <!-- Success Modal -->
+    <div v-if="showSuccessModal" class="fixed inset-0 z-50 bg-inverse-surface/40 backdrop-blur-sm flex items-center justify-center p-space-md">
+      <div class="w-full max-w-md bg-surface-container-lowest rounded-xl p-space-xl shadow-xl flex flex-col items-center text-center gap-space-md">
+        <div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center animate-bounce">
+          <span class="material-symbols-outlined text-[36px]">mark_email_read</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h3 class="font-headline-md text-headline-md text-on-surface">Photos Dispatched!</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">We sent your complete high-res photo gallery to {{ sentToEmail }}</p>
+        </div>
+        <div class="w-full p-space-sm rounded-lg bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[18px]">print</span>
+          <span>Physical prints ready in tray!</span>
+        </div>
+        <button type="button" @click="closeModal" class="w-full h-12 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg font-semibold mt-2">Finish &amp; Start Fresh</button>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="fixed bottom-margin left-margin right-margin z-40 pointer-events-none">
+      <div class="max-w-7xl mx-auto flex items-center justify-between font-label-md text-label-md text-on-surface-variant/60">
+        <div class="flex items-center gap-space-xs pointer-events-auto">
+          <span class="material-symbols-outlined text-[14px] text-primary">photo_camera</span>
+          <span>Touchscreen Ready</span>
+        </div>
+        <div class="pointer-events-auto flex items-center gap-space-md">
+          <span class="uppercase tracking-wider">Lumina OS • 60 FPS</span>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.result-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  color: #ffffff;
+.kb-key {
   user-select: none;
-  padding: 2rem 3rem;
-  box-sizing: border-box;
 }
-
-.step-header {
-  text-align: center;
-}
-
-.step-badge {
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  padding: 0.35rem 1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.step-title {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0.5rem 0 0.2rem;
-}
-
-.step-subtitle {
-  color: #94a3b8;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-/* Workspace Layout */
-.result-workspace {
-  display: flex;
-  gap: 3.5rem;
-  width: 100%;
-  max-width: 1000px;
-  height: 60vh;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Image Card */
-.image-preview-card {
-  height: 100%;
-  aspect-ratio: 1 / 3;
-  background: #1e293b;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  border: 3px solid rgba(255, 255, 255, 0.15);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.final-composed-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.placeholder-box {
-  color: #64748b;
-  font-size: 0.9rem;
-}
-
-/* Options Right Panel */
-.options-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 320px;
-}
-
-.panel-section-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #cbd5e1;
-  margin: 0 0 0.75rem;
-}
-
-/* QR Code Section */
-.qr-card {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1.25rem;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.qr-img {
-  width: 160px;
-  height: 160px;
-  border-radius: 0.75rem;
-  background: #ffffff;
-  padding: 8px;
-}
-
-.qr-skeleton {
-  width: 160px;
-  height: 160px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.75rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #64748b;
-  font-size: 0.85rem;
-}
-
-.qr-instruction {
-  font-size: 0.8rem;
-  color: #94a3b8;
-  margin: 0.75rem 0 0;
-  line-height: 1.3;
-}
-
-/* Print Counter Section */
-.print-counter-section {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 1.25rem;
-  padding: 1.25rem;
-}
-
-.counter-control {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(15, 23, 42, 0.8);
-  border-radius: 0.75rem;
-  padding: 0.5rem;
-}
-
-.btn-counter {
-  width: 40px;
-  height: 40px;
-  border-radius: 0.5rem;
-  border: none;
-  background: #334155;
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-counter:hover:not(:disabled) {
-  background: #475569;
-}
-
-.btn-counter:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.copies-count {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-/* Action Bar */
-.action-bar {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1.25rem;
-}
-
-.session-tag {
-  color: #94a3b8;
-  font-size: 0.95rem;
-}
-
-.session-tag strong {
-  color: #38bdf8;
-}
-
-.btn-primary-print {
-  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5);
-  transition: all 0.2s;
-}
-
-.btn-primary-print:hover:not(:disabled) {
-  transform: scale(1.03);
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.7);
-}
-
-.btn-primary-print:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.printing-state {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+input[type="email"] {
+  caret-color: #0037b0;
 }
 </style>

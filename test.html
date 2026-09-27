@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="web_blank" name="shell-type" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <style>
+      @layer base {
+
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+        }
+
+        body {
+          overscroll-behavior: none;
+        }
+
+        main>:first-child {
+          margin-top: 0 !important;
+        }
+
+        main>:last-child {
+          margin-bottom: 0 !important;
+        }
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#d0e4ff",
+              "on-primary-fixed": "#001551",
+              "on-background": "#131b2e",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#f2f3ff",
+              "on-primary-fixed-variant": "#0039b5",
+              "on-tertiary-fixed-variant": "#03497a",
+              "on-secondary-container": "#fefcff",
+              "primary-container": "#1d4ed8",
+              "secondary-fixed": "#d8e2ff",
+              "error-container": "#ffdad6",
+              "on-surface": "#131b2e",
+              "surface-tint": "#2151da",
+              "surface-container-highest": "#dae2fd",
+              "tertiary-container": "#285f91",
+              "surface-dim": "#d2d9f4",
+              "on-tertiary-container": "#b8d8ff",
+              "on-secondary-fixed": "#001a42",
+              "on-error-container": "#93000a",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#2170e4",
+              "tertiary-fixed-dim": "#9ccaff",
+              "background": "#faf8ff",
+              "secondary": "#0058be",
+              "surface-bright": "#faf8ff",
+              "inverse-primary": "#b7c4ff",
+              "outline": "#747686",
+              "tertiary": "#004777",
+              "inverse-on-surface": "#eef0ff",
+              "primary-fixed": "#dce1ff",
+              "primary-fixed-dim": "#b7c4ff",
+              "on-error": "#ffffff",
+              "surface-variant": "#dae2fd",
+              "primary": "#0037b0",
+              "on-secondary": "#ffffff",
+              "outline-variant": "#c4c5d7",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-secondary-fixed-variant": "#004395",
+              "on-primary-container": "#cad3ff",
+              "surface-container": "#eaedff",
+              "surface-container-high": "#e2e7ff",
+              "on-tertiary-fixed": "#001d35",
+              "surface": "#faf8ff",
+              "inverse-surface": "#283044",
+              "on-surface-variant": "#434655",
+              "error": "#ba1a1a"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "space-xl": "2.5rem",
+              "space-lg": "1.5rem",
+              "space-xs": "0.25rem",
+              "space-md": "1rem",
+              "space-sm": "0.5rem",
+              "gutter": "1.5rem",
+              "margin": "2.5rem"
+            },
+            fontFamily: {
+              "body-md": ["Manrope"],
+              "headline-lg": ["Space Grotesk"],
+              "headline-md": ["Space Grotesk"],
+              "display-sm": ["Space Grotesk"],
+              "display-lg": ["Space Grotesk"],
+              "label-md": ["Manrope"],
+              "body-lg": ["Manrope"],
+              "label-lg": ["Manrope"]
+            },
+            fontSize: {
+              "body-md": ["1rem", {
+                "lineHeight": "1.5rem",
+                "letterSpacing": "0em",
+                "fontWeight": "400"
+              }],
+              "headline-lg": ["2rem", {
+                "lineHeight": "2.5rem",
+                "letterSpacing": "-0.015em",
+                "fontWeight": "600"
+              }],
+              "headline-md": ["1.5rem", {
+                "lineHeight": "2rem",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "500"
+              }],
+              "display-sm": ["2.75rem", {
+                "lineHeight": "3.25rem",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "600"
+              }],
+              "display-lg": ["4rem", {
+                "lineHeight": "4.5rem",
+                "letterSpacing": "-0.03em",
+                "fontWeight": "600"
+              }],
+              "label-md": ["0.75rem", {
+                "lineHeight": "1rem",
+                "letterSpacing": "0.04em",
+                "fontWeight": "600"
+              }],
+              "body-lg": ["1.125rem", {
+                "lineHeight": "1.75rem",
+                "letterSpacing": "0em",
+                "fontWeight": "400"
+              }],
+              "label-lg": ["0.875rem", {
+                "lineHeight": "1.25rem",
+                "letterSpacing": "0.01em",
+                "fontWeight": "600"
+              }]
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-background font-body-md text-on-surface antialiased select-none">
+    <div class="fixed top-margin left-margin z-50 flex items-center gap-space-sm pointer-events-none">
+      <div class="flex items-center gap-space-xs">
+        <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+        <span class="w-2.5 h-2.5 rounded-full bg-outline-variant/60"></span>
+      </div>
+      <div class="w-1.5 h-1.5 rounded-full bg-primary/40 ml-space-xs"></div>
+      <span class="font-label-md text-label-md text-on-surface-variant/50 tracking-widest uppercase">Lumina Studio</span>
+    </div>
+    <div class="fixed top-margin right-margin z-50 flex items-center gap-space-sm pointer-events-none">
+      <div class="flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-lowest/80 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="font-label-md text-label-md text-on-surface-variant tracking-wider uppercase">Live Kiosk</span>
+      </div>
+    </div>
+    <main class="w-full min-h-screen bg-background relative flex flex-col justify-between p-margin">
+      <div class="flex flex-col w-full">
+        <div class="relative w-full flex-1 flex flex-col items-center justify-between min-h-[calc(100vh-5rem)] py-space-md select-none overflow-hidden" id="interactive-screen">
+          <div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-40">
+            <div class="w-[680px] h-[680px] rounded-full bg-gradient-to-tr from-primary-fixed/20 via-tertiary-fixed/30 to-transparent blur-3xl transform -translate-y-12"></div>
+          </div>
+          <div class="w-full flex justify-between items-center px-space-xl opacity-0 animate-fade-in text-on-surface-variant/70 font-label-md text-label-md">
+            <div class="flex items-center gap-space-sm tracking-wider uppercase">
+              <span class="inline-block w-2 h-2 rounded-full bg-primary animate-ping"></span>
+              <span>Studio Calibrated</span>
+            </div>
+            <div class="flex items-center gap-space-md">
+              <span class="flex items-center gap-space-xs">
+                <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span> Studio Lighting On </span>
+            </div>
+          </div>
+          <div class="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center my-auto px-space-md">
+            <div class="relative mb-space-xl group cursor-pointer" id="strip-container">
+              <div class="absolute -inset-6 bg-gradient-to-b from-primary/5 via-secondary/5 to-transparent rounded-full blur-2xl opacity-60 transition duration-700 group-hover:opacity-100"></div>
+              <div class="relative flex items-center justify-center gap-space-lg transform -rotate-1 transition-all duration-500 hover:rotate-0 hover:scale-[1.015]">
+                <div class="w-44 md:w-52 bg-surface-container-lowest p-space-sm pb-space-lg rounded-xl shadow-[0_20px_50px_-12px_rgba(19,27,46,0.12)] flex flex-col gap-space-xs transition-transform duration-500 group-hover:-translate-y-1">
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Chic and joyful friends laughing together in natural bright studio lighting, photobooth candid style, subtle warm tones, minimal modern aesthetics, crisp editorial framing with clean composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCicjmHXf2OaQjHF2vbvinRwjshnUIi__8qus9qfspXyXozYaetTUxHukxaVGWJMYUe-pMGoOJ9loYk7KWjeNt915nfigMYoyiViyFNX6XuJoW2_Nvo2WL3MMqq5t3Dd9S0qr1V8vOy-Xwvutv3a_HEduYbAnIYE3JMAkUlGJM7MEAMIMXW21610yOA4ZEtq0jH9vMzUrAFFpdZeeCop_l7c131AS3IxQipbIyn0mNUiMorrO9b0XPr" />
+                  </div>
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Stylish candid solo portrait of a woman smiling with soft sunlit rim light, photobooth film frame aesthetic, bright neutral studio interior, elegant minimal tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCywGrvfiqovZxZ3tzUZtrvy1QKP2zMlZ_zKwivrEZxqOUDZV02qaDFpfsUll2YjmIqom99UD5UxQyopcumJK4HJh2unK0Xrvb3EEmrK4pmnPEvxjp1l6iCH9kVKW5gJL2dN0KuFboWV1uL7Jv3At9gvbUtBzCvv1ih7crBHpl3RtXUjmFeQ33qFYaxBfURVhC91bZt4ZodsGpkzRSURkdjr1KBVk4cOAyxb22oPEYRtglHs1_Z7nl4" />
+                  </div>
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Two creative friends smiling playfully towards the camera, candid moment, soft diffuse photo studio flashes, chic minimal aesthetic with pure white accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC11KBHK354F97tNnQTi2Y_FeDz-_VltNRtOhm0GE00G1SGm0KWlOEdyuV5o7cgQXALZgQuoyN_42nMzonaDk_5TZquIN_43hjiVK5HucTqDLouCem8oaxCOOGV7mqi1yaLGZ5WTQmpZgh5DrWa7424nF3sY4IUzMUJ2-5r1D5TScwIJm9aftx6uYZyrp-3qR8CUoYhKGm7ADCBPy6lx0qyx5yjxc87jYWKa0j833dCbsbTOBFp8Bob" />
+                  </div>
+                  <div class="pt-space-xs flex justify-between items-center px-1">
+                    <span class="font-headline-md text-label-md text-on-surface-variant/40 tracking-widest font-semibold uppercase">LUMINA</span>
+                    <span class="font-label-md text-[10px] text-on-surface-variant/40">№ 042</span>
+                  </div>
+                </div>
+                <div class="hidden sm:flex w-44 md:w-52 bg-surface-container-lowest p-space-sm pb-space-lg rounded-xl shadow-[0_24px_60px_-12px_rgba(19,27,46,0.14)] flex-col gap-space-xs transform rotate-3 translate-y-4 transition-transform duration-500 group-hover:translate-y-2 group-hover:rotate-2">
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Energetic group candid shot with confetti in bright high-key lighting, joyful modern photobooth memory, warm natural tones and clean white details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAvmBOE3opDXmQ7dozMtIQJgnSX_oqKYDcRPBRfoxFxCn8poSLB-4U09nb24NtJmUmTQD1qlPQKI1zswr2-QqXUH71bKzdzbgVhFY_TPQQLrW3EUHPCE-wA_rOQPV_mM-kkYs98j01_TdDfVnEtvmPl9ctjN5xS-lmEh0K35I2ly3bwSxdCIJaxYxu49tIIoynzhoOs1Y3Cw0Rxuc7QdgXJAeKiZs716pXWcboyPuuMprtFN_BiEym" />
+                  </div>
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Joyful stylish couple posing warmly with natural laughs, crisp studio portrait lighting, soft neutral background, photobooth keepsake style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrCHTvPi0B6Jj8pgNGCSS9ctuF6Z6RQXYw_FqEN_FSbq_0r_pdZ-aXUo_Vo73dBR3-lSHIcZejA_Ao4P3J7rzIjrLe6Py4BJJYHiJ-zZgwoUPxt0o3NJEmxfYjI5gYfssiGttbGC7ExDgHZFIOFPY5aD2LuEP6ZKxxvl7b2lbz1mGv3uthhC8YPVvGl3JVrl1eGFG6FomjmoRWxmwXzOOMNYVwiCPMNDSjAWYU_u4YNQZr7BDHHVUx" />
+                  </div>
+                  <div class="aspect-[4/3] w-full rounded-lg overflow-hidden bg-surface-container">
+                    <img class="w-full h-full object-cover" data-alt="Celebratory guest throwing peace signs at studio camera, bright aesthetic, soft shadow details, photobooth snapshot with warm natural palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFTiTUNAnx0uE2EquN_BtEF3zHiq-Y8VzVH--1fa4B-9QQVeq89UbsWUB0UFyLsyZAdj3vcdpc5xIXLd79Cm6k8yFa_QuhcPTp-MJaDW0y2rLuW8S7FMub0SREJZyEkJHIylC4_7PBpvzgglqyAW-I2Kf0HEYo-xWJ32yKTc-cm_-GEe0stX7RA9MaoPwGqnUpKEnkmWupdwFzRgyG_UjHON9yeI8pAvn8Qq1yy653Ak5W-Hm0hEG4" />
+                  </div>
+                  <div class="pt-space-xs flex justify-between items-center px-1">
+                    <span class="font-headline-md text-label-md text-on-surface-variant/40 tracking-widest font-semibold uppercase">LUMINA</span>
+                    <span class="font-label-md text-[10px] text-on-surface-variant/40">№ 043</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center text-center space-y-space-xs max-w-xl">
+              <h1 class="font-headline-lg text-display-sm text-on-surface tracking-tight font-semibold"> Ready for your photos? </h1>
+              <p class="font-body-lg text-body-lg text-on-surface-variant"> Tap anywhere or press <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md font-semibold mx-1 shadow-sm">Space</span> to begin </p>
+            </div>
+            <div class="mt-space-xl flex flex-col items-center">
+              <button class="group relative flex items-center gap-space-md bg-primary hover:bg-secondary-container active:scale-95 text-on-primary font-label-lg text-label-lg px-space-xl py-4 rounded-full shadow-[0_12px_32px_-4px_rgba(29,78,216,0.35)] hover:shadow-[0_16px_40px_-4px_rgba(29,78,216,0.45)] transition-all duration-300" id="start-btn">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-on-primary/15 group-hover:bg-on-primary/25 transition-colors">
+                  <span class="material-symbols-outlined text-[20px] text-on-primary">photo_camera</span>
+                </span>
+                <span class="font-semibold tracking-wide">Start Photo Session</span>
+                <span class="hidden sm:inline-block ml-2 px-2.5 py-1 rounded-full bg-on-primary/20 text-on-primary font-label-md text-label-md font-medium tracking-normal"> Space </span>
+              </button>
+            </div>
+          </div>
+          <div class="relative z-10 w-full flex flex-col sm:flex-row items-center justify-center gap-space-xs text-center py-space-sm text-on-surface-variant/70 font-label-md text-label-md">
+            <span class="inline-flex items-center gap-space-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
+              <span>Photo Booth Ready</span>
+            </span>
+            <span class="hidden sm:inline opacity-40">•</span>
+            <span>Touch anywhere to start</span>
+          </div>
+          <div class="fixed inset-0 bg-surface-container-lowest pointer-events-none opacity-0 transition-opacity duration-300 z-50" id="flash-effect"></div>
+        </div>
+        <script>
+          (function() {
+            const startBtn = document.getElementById('start-btn');
+            const interactiveScreen = document.getElementById('interactive-screen');
+            const flashEffect = document.getElementById('flash-effect');
+
+            function triggerStart() {
+              if (!flashEffect) return;
+              flashEffect.style.opacity = '0.9';
+              setTimeout(() => {
+                flashEffect.style.opacity = '0';
+              }, 220);
+            }
+            if (startBtn) {
+              startBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                triggerStart();
+              });
+            }
+            if (interactiveScreen) {
+              interactiveScreen.addEventListener('click', function() {
+                triggerStart();
+              });
+            }
+            window.addEventListener('keydown', function(e) {
+              if (e.code === 'Space' || e.key === ' ') {
+                e.preventDefault();
+                triggerStart();
+              }
+            });
+          })();
+        </script>
+      </div>
+    </main>
+    <footer class="fixed bottom-margin left-margin right-margin z-40 pointer-events-none">
+      <div class="max-w-7xl mx-auto flex items-center justify-between font-label-md text-label-md text-on-surface-variant/60">
+        <div class="flex items-center gap-space-xs pointer-events-auto">
+          <span class="material-symbols-outlined text-[16px] text-primary">photo_camera</span>
+          <span>Touchscreen Ready</span>
+        </div>
+        <div class="pointer-events-auto flex items-center gap-space-md">
+          <span class="uppercase tracking-wider">Lumina OS • 60 FPS</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -43,16 +43,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/06_ResultView.vue'),
     meta: { step: 6, requiresActiveSession: true, requiresPayment: true },
   },
-  {
-    path: '/print-email',
-    name: 'PrintEmail',
-    component: () => import('../views/07_PrintEmailView.vue'),
-    meta: { step: 7, requiresActiveSession: true, requiresPayment: true },
-  },
+
   {
     path: '/thankyou',
     name: 'ThankYou',
-    component: () => import('../views/08_ThankYouView.vue'),
+    component: () => import('../views/07_ThankYouView.vue'),
     meta: { step: 8, requiresActiveSession: true },
   },
   {
